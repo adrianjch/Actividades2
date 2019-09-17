@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<enemies>
+  <enemy name="Cesc">
+    <vitality>97</vitality>
+    <damage>7</damage>
+    <defense>3</defense>
+    <frequency>25</frequency>
+    <experience>8</experience>
+    <weapons>
+      <weapon name="SCAR-H" type="ASSAULT RIFLE" range="4"/>
+      <weapon name="KSG" type="SHOTGUN" range="2"/>
+    </weapons>
+  </enemy>
+  
+  <enemy name="Radev">
+    <vitality>100</vitality>
+    <damage>10</damage>
+    <defense>10</defense>
+    <frequency>1</frequency>
+    <experience>10</experience>
+    <weapons>
+      <weapon name="AWP" type="SNIPER_RIFLE" range="5"/>
+      <weapon name="Knife" type="MEELEE" range="1"/>
+    </weapons>
+  </enemy>
+  
+  <enemy name="Fulanito">
+    <vitality>42</vitality>
+    <damage>4</damage>
+    <defense>6</defense>
+    <frequency>35</frequency>
+    <experience>3</experience>
+    <weapons>
+      <weapon name="Crowbar" type="MEELEE" range="1"/>
+    </weapons>
+  </enemy>
+
+  <enemy name="Hulio">
+    <vitality>79</vitality>
+    <damage>5</damage>
+    <defense>5</defense>
+    <frequency>20</frequency>
+    <experience>7</experience>
+    <weapons>
+      <weapon name="Desert Eagle" type="PISTOL" range="3"/>
+      <weapon name="MP7" type="SUBMACHINE_GUN" range="3"/>
+      <weapon name="HAMR" type="LIGHT_MACHINE_GUN" range="4"/>
+    </weapons>
+  </enemy>
+</enemies>
