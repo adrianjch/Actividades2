@@ -6,10 +6,8 @@
     <defense>3</defense>
     <frequency>25</frequency>
     <experience>8</experience>
-    <weapons>
-      <weapon name="SCAR-H" type="ASSAULT RIFLE" range="4"/>
-      <weapon name="KSG" type="SHOTGUN" range="2"/>
-    </weapons>
+    <weapon name="SCAR-H" type="Assault rifle" range="4"/>
+    <weapon name="KSG" type="Shotgun" range="2"/>
   </enemy>
   
   <enemy name="Radev">
@@ -18,21 +16,17 @@
     <defense>10</defense>
     <frequency>1</frequency>
     <experience>10</experience>
-    <weapons>
-      <weapon name="AWP" type="SNIPER_RIFLE" range="5"/>
-      <weapon name="Knife" type="MEELEE" range="1"/>
-    </weapons>
+    <weapon name="AWP" type="Sniper rifle" range="5"/>
+    <weapon name="Knife" type="Meelee" range="1"/>
   </enemy>
   
-  <enemy name="Fulanito">
+  <enemy name="Fulano">
     <vitality>42</vitality>
     <damage>4</damage>
     <defense>6</defense>
     <frequency>35</frequency>
     <experience>3</experience>
-    <weapons>
-      <weapon name="Crowbar" type="MEELEE" range="1"/>
-    </weapons>
+    <weapon name="Crowbar" type="Meelee" range="1"/>
   </enemy>
 
   <enemy name="Hulio">
@@ -41,10 +35,8 @@
     <defense>5</defense>
     <frequency>20</frequency>
     <experience>7</experience>
-    <weapons>
-      <weapon name="Desert Eagle" type="PISTOL" range="3"/>
-      <weapon name="MP7" type="SUBMACHINE_GUN" range="3"/>
-      <weapon name="HAMR" type="LIGHT_MACHINE_GUN" range="4"/>
-    </weapons>
+    <weapon name="Desert Eagle" type="Pistol" range="3"/>
+    <weapon name="MP7" type="Submachine gun" range="3"/>
+    <weapon name="HAMR" type="Light machine gun" range="4"/>
   </enemy>
 </enemies>
