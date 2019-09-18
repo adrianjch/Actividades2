@@ -55,6 +55,5 @@ int main() {
 		}
 		enemies.insert(std::pair<std::string, Enemies>(pNodeI->name(), aux));
 	}
-
 	return 0;
 }
