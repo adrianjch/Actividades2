@@ -3,6 +3,7 @@
 #include "../../dep/inc/XML/rapidxml_iterators.hpp"
 #include "../../dep/inc/XML/rapidxml_print.hpp"
 #include <map>
+#include <sstream>
 
 
 struct Enemies {
@@ -45,7 +46,7 @@ int main() {
 			else if (pNodeII->name() == "experience")
 				aux.experienceAtDefeat = std::stoi(pNodeII->value());
 			else if (pNodeII->name() == "weapon") {
-				aux.weapons.insert(std::pair<std::string, Enemies::Weapon>(pNodeII->first_attribute()->value(), { pNodeII->first_attribute()->next_attribute()->value(), std::stoi(pNodeII->last_attribute()->value()) }));
+				//aux.weapons.insert(std::pair<std::string, Enemies::Weapon>(pNodeII->first_attribute()->value(), { pNodeII->first_attribute()->next_attribute()->value(), std::stoi(pNodeII->last_attribute()->value()) }));
 				//which one is better?
 				Enemies::Weapon aux2;
 				aux2.type = pNodeII->first_attribute()->next_attribute()->value();
