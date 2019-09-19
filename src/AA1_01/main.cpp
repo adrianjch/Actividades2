@@ -20,30 +20,22 @@ int main() {
 	doc.parse<0>(&content[0]);
 
 	rapidxml::xml_node<> *pRoot = doc.first_node();
-	for (rapidxml::xml_node<> *pNodeI = pRoot->first_node(); pNodeI; pNodeI = pNodeI->next_sibling()) {
+	for (rapidxml::xml_node<> *pNodeI = pRoot->first_node("enemy"); pNodeI; pNodeI = pNodeI->next_sibling()) {
 		Enemy aux;
-		for (rapidxml::xml_node<> *pNodeII = pNodeI->first_node(); pNodeII; pNodeII = pNodeII->next_sibling()) {
-			if (pNodeII->name() == static_cast<std::string>("vitality"))
-				aux.vitality = std::stoi(pNodeII->value());
-			else if (pNodeII->name() == static_cast<std::string>("damage"))
-				aux.attackDamage = std::stoi(pNodeII->value());
-			else if (pNodeII->name() == static_cast<std::string>("defense"))
-				aux.defense = std::stoi(pNodeII->value());
-			else if (pNodeII->name() == static_cast<std::string>("frequency"))
-				aux.attackFrequency = std::stoi(pNodeII->value());
-			else if (pNodeII->name() == static_cast<std::string>("experience"))
-				aux.experienceAtDefeat = std::stoi(pNodeII->value());
-			else if (pNodeII->name() == static_cast<std::string>("weapon")) {
-				//aux.weapons.insert(std::pair<std::string, Enemies::Weapon>(pNodeII->first_attribute()->value(), { pNodeII->first_attribute()->next_attribute()->value(), std::stoi(pNodeII->last_attribute()->value()) }));
-				//which one is better?
-				Enemy::Weapon aux2;
-				aux2.type = pNodeII->first_attribute()->next_attribute()->value();
-				aux2.range = std::stoi(pNodeII->last_attribute()->value());
-				aux.weapons.insert(std::pair<std::string, Enemy::Weapon>(pNodeII->first_attribute()->value(), aux2));
-			}
+		aux.vitality = std::stoi(pNodeI->first_node("vitality")->value());
+		aux.attackDamage =  std::stoi(pNodeI->first_node("damage")->value());
+		aux.defense = std::stoi(pNodeI->first_node("defense")->value());
+		aux.attackFrequency = std::stoi(pNodeI->first_node("frequency")->value());
+		aux.experienceAtDefeat = std::stoi(pNodeI->first_node("experience")->value());
+		for (rapidxml::xml_node<> *pNodeII = pNodeI->first_node("weapon"); pNodeII; pNodeII = pNodeII->next_sibling()) {
+			Enemy::Weapon aux2;
+			aux2.type = pNodeII->first_attribute("type")->value();
+			aux2.range = std::stoi(pNodeII->first_attribute("range")->value());
+			aux.weapons.insert(std::pair<std::string, Enemy::Weapon>(pNodeII->first_attribute("name")->value(), aux2)); //insert all weapons, Enemy finished
 		}
-		enemies.insert(std::pair<std::string, Enemy>(pNodeI->first_attribute()->value(), aux));
+		enemies.insert(std::pair<std::string, Enemy>(pNodeI->first_attribute("name")->value(), aux));	//insert the whole enemy to the map
 	}
+	doc.clear();
 
 	printEnemies(enemies);
 
