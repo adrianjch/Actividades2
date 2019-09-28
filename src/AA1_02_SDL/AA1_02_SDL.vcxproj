@@ -20,10 +20,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{8E0A920B-E210-4BD8-B5F6-3D4D182B6E01}</ProjectGuid>
-    <RootNamespace>AA102</RootNamespace>
+    <ProjectGuid>{002957E9-70C7-4C38-A5B2-0351B72A1131}</ProjectGuid>
+    <RootNamespace>AA102SDL</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
-    <ProjectName>AA1_02-Test</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
