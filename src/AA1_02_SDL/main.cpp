@@ -1,14 +1,16 @@
 #include <SDL.h>		// Always needs to be included for an SDL app
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include <SDL_mixer.h>
 
 #include <exception>
 #include <iostream>
 #include <string>
 
-//Game general information
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 600
+#include "types.h"
+#include "constants.h"
+
+///5-6-7-8-10-11
 
 int main(int, char*[]) 
 {
@@ -32,38 +34,50 @@ int main(int, char*[])
 		throw "Error: SDL_image init";
 
 	//-->SDL_TTF
-	if (!TTF_Init())
+	//TTF_Init();
+	if (TTF_Init() == -1)
 		throw "No es pot inicialitzar SDL_ttf";
 
 	//-->SDL_Mix
+	const Uint8 mixFlags{ MIX_INIT_MP3 | MIX_INIT_OGG };
+	if (!Mix_Init(mixFlags))
+		throw "No es pot inicialitzar SDL_mixer";
+	if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024) == 0)///change to -1
+		throw "Unable to initialize SDL_mixer audio systems";
 
 	// --- SPRITES ---
-		//Background
-		SDL_Texture* bgTexture{ IMG_LoadTexture(m_renderer, "../../res/img/bg.jpg") };
-		if (bgTexture == nullptr) 
-			throw "Error: bgTexture init";
-		SDL_Rect bgRect{ 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+	//Background
+	SDL_Texture* bgTexture{ IMG_LoadTexture(m_renderer, "../../res/img/bg.jpg") };
+	if (bgTexture == nullptr) 
+		throw "Error: bgTexture init";
+	SDL_Rect bgRect{ 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 
-		SDL_Texture* kintounTexture{ IMG_LoadTexture(m_renderer, "../../res/img/kintoun.png") };
-		if (kintounTexture == nullptr)
-			throw "Error: kintounTexture init";
-		SDL_Rect kintounRect{ SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 117, 63 };
+	SDL_Texture* playerTexture{ IMG_LoadTexture(m_renderer, "../../res/img/kintoun.png") };
+	if (playerTexture == nullptr)
+		throw "Error: kintounTexture init";
+	SDL_Rect playerRect{ 0, 0, 117, 63 };
+	IVec2 mousePos{ 0, 0 };
 
 	//-->Animated Sprite ---
 
 	// --- TEXT ---
-		TTF_Font *font{ TTF_OpenFont("../../res/ttf/saiyan/ttf", 80) };
-		if (font == nullptr)
-			throw "No es pot inicialitzar TTF_Font";
-		SDL_Surface *tmpSurf{ TTF_RenderText_Blended(font, "My first SDL game", SDL_Color{ 255, 150, 0, 255}) };
-		if (tmpSurf == nullptr)
-			throw "Unable to create the SDL text surface";
-		SDL_Texture *textTexture{ SDL_CreateTextureFromSurface(m_renderer, tmpSurf) };
-		SDL_Rect textRect{ 100, 50, tmpSurf->w, tmpSurf->h};
-		SDL_FreeSurface(tmpSurf);
-		TTF_CloseFont(font);
+	TTF_Font *font{ TTF_OpenFont("../../res/ttf/saiyan.ttf", 80) };
+	if (font == nullptr)
+		throw "No es pot inicialitzar TTF_Font";
+	SDL_Surface *tmpSurf{ TTF_RenderText_Blended(font, "My first SDL game", SDL_Color{ 255, 150, 0, 255}) };
+	if (tmpSurf == nullptr)
+		throw "Unable to create the SDL text surface";
+	SDL_Texture *textTexture{ SDL_CreateTextureFromSurface(m_renderer, tmpSurf) };
+	SDL_Rect textRect{ 100, 50, tmpSurf->w, tmpSurf->h};
+	SDL_FreeSurface(tmpSurf);
+	TTF_CloseFont(font);
 
 	// --- AUDIO ---
+	Mix_Music *soundtrack{ Mix_LoadMUS("../../res/au/mainTheme.mp3") };
+	if (!soundtrack)
+		throw "Unable to load the Mix_Music soundtrack";
+	Mix_VolumeMusic(MIX_MAX_VOLUME / 2);
+	Mix_PlayMusic(soundtrack, -1);
 
 	// --- GAME LOOP ---
 	SDL_Event event;
@@ -79,24 +93,35 @@ int main(int, char*[])
 				if (event.key.keysym.sym == SDLK_ESCAPE) 
 					isRunning = false; 
 				break;
+			case SDL_MOUSEMOTION:
+				mousePos.x = event.motion.x;
+				mousePos.y = event.motion.y;
+				break;
 			default:;
 			}
 		}
 
 		// UPDATE
+		playerRect.x += (mousePos.x - playerRect.x  - playerRect.w / 2) / 10;
+		playerRect.y += (mousePos.y - playerRect.y - playerRect.h / 2) / 10;
 
 		// DRAW
 		SDL_RenderClear(m_renderer);
 
 		//Background
 		SDL_RenderCopy(m_renderer, bgTexture, nullptr, &bgRect);
-		SDL_RenderCopy(m_renderer, kintounTexture, nullptr, &kintounRect);
+		SDL_RenderCopy(m_renderer, playerTexture, nullptr, &playerRect);
+		SDL_RenderCopy(m_renderer, textTexture, nullptr, &textRect);
 		SDL_RenderPresent(m_renderer);
 
 	}
 
 	// --- DESTROY ---
+	Mix_CloseAudio();
+	Mix_Quit();
+	SDL_DestroyTexture(textTexture);
 	TTF_Quit();
+	SDL_DestroyTexture(playerTexture);
 	SDL_DestroyTexture(bgTexture);
 	IMG_Quit();
 	SDL_DestroyRenderer(m_renderer);
