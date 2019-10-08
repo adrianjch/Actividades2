@@ -9,6 +9,7 @@
 
 #include "types.h"
 #include "constants.h"
+#include "button.h"
 
 
 bool checkIfMouseIn(SDL_Rect rect, IVec2 mouse) {
@@ -45,7 +46,7 @@ int main(int, char*[])
 	const Uint8 mixFlags{ MIX_INIT_MP3 | MIX_INIT_OGG };
 	if (!Mix_Init(mixFlags))
 		throw "No es pot inicialitzar SDL_mixer";
-	if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024) == -1)///change to -1
+	if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024) == 0)///change to -1
 		throw "Unable to initialize SDL_mixer audio systems";
 
 	// --- SPRITES ---
@@ -133,6 +134,7 @@ int main(int, char*[])
 	//General variables
 	IVec2 mousePos{ 0, 0 };
 	bool playActivated = false;
+	bool input[static_cast<int>(InputKey::COUNT)] = {};
 
 	// --- GAME LOOP ---
 	SDL_Event event;
@@ -145,35 +147,52 @@ int main(int, char*[])
 				isRunning = false; 
 				break;
 			case SDL_KEYDOWN:	///http://wiki.libsdl.org/SDL_Keycode
-				if (event.key.keysym.sym == SDLK_ESCAPE) 
-					isRunning = false; 
+				if (event.key.keysym.sym == SDLK_ESCAPE)
+					input[static_cast<int>(InputKey::K_ESC)] = true;
 				break;
 			case SDL_MOUSEMOTION:
 				mousePos.x = event.motion.x;
 				mousePos.y = event.motion.y;
-				play.hover = checkIfMouseIn(play.rect, mousePos);
-				sound.hover = checkIfMouseIn(sound.rect, mousePos);
-				exit.hover = checkIfMouseIn(exit.rect, mousePos);
+				input[static_cast<int>(InputKey::M_MOVED)] = true;
 				break;
 			case SDL_MOUSEBUTTONDOWN:
-				if (event.button.button == SDL_BUTTON_LEFT) {
-					play.clicked = play.hover;
-					sound.clicked = sound.hover;
-					exit.clicked = exit.hover;
-				}
+				if (event.button.button == SDL_BUTTON_LEFT)
+					input[static_cast<int>(InputKey::M_LEFT)] = true;
+				break;
+			case SDL_MOUSEBUTTONUP:
+				if (event.button.button == SDL_BUTTON_LEFT)
+					input[static_cast<int>(InputKey::M_LEFT)] = false;
 				break;
 			default:;
 			}
 		}
 
 		// UPDATE
+		if (input[static_cast<int>(InputKey::K_ESC)])
+			isRunning = false;
+		if (input[static_cast<int>(InputKey::M_MOVED)]) {
+			play.hover = checkIfMouseIn(play.rect, mousePos);
+			sound.hover = checkIfMouseIn(sound.rect, mousePos);
+			exit.hover = checkIfMouseIn(exit.rect, mousePos);
+		}
+		if (input[static_cast<int>(InputKey::M_LEFT)]) {
+			play.clicked = play.hover;
+			sound.clicked = sound.hover;
+			exit.clicked = exit.hover;
+		}
+		else {
+			play.clicked = false;
+			sound.clicked = false;
+			exit.clicked = false;
+		}
 		playerRect.x += (mousePos.x - playerRect.x  - playerRect.w / 2) / 10;
 		playerRect.y += (mousePos.y - playerRect.y - playerRect.h / 2) / 10;
 		//play button
 		if (play.clicked) {
-			playActivated = !playActivated;
-			play.clicked = false;
+			playActivated = true;
 		}
+		else
+			playActivated = false;
 		if (playActivated)
 			play.texture = playClickTexture;
 		else {

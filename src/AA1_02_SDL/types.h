@@ -3,10 +3,11 @@ struct IVec2{
 	int x;
 	int y;
 };
-
-struct Button {
-	SDL_Texture *texture;
-	SDL_Rect rect;
-	bool hover = false;
-	bool clicked = false;
+struct Rect {
+	int x;
+	int y;
+	int w;
+	int h;
 };
+
+enum InputKey{ K_ESC, M_LEFT, M_MOVED, COUNT};

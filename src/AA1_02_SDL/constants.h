@@ -2,6 +2,7 @@
 //screen parameters
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
+const int FPS = 60;
 
 //paths
 const char IMAGE_PATH[] = "../../res/img/";
