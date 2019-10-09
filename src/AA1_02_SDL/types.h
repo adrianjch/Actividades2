@@ -10,4 +10,4 @@ struct Rect {
 	int h;
 };
 
-enum InputKey{ K_ESC, M_LEFT, M_MOVED, COUNT};
+enum class InputKey{ K_ESC, M_LEFT, M_MOVED, COUNT};
