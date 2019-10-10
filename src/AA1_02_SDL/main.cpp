@@ -6,15 +6,12 @@
 #include <exception>
 #include <iostream>
 #include <string>
+#include <time.h>
 
 #include "types.h"
 #include "constants.h"
 #include "button.h"
-
-
-bool checkIfMouseIn(SDL_Rect rect, IVec2 mouse) {
-	return (mouse.x >= rect.x && mouse.x <= rect.x + rect.w && mouse.y >= rect.y && mouse.y <= rect.y + rect.h);
-}
+#include "utils.h"
 
 
 int main(int, char*[]) 
@@ -46,7 +43,7 @@ int main(int, char*[])
 	const Uint8 mixFlags{ MIX_INIT_MP3 | MIX_INIT_OGG };
 	if (!Mix_Init(mixFlags))
 		throw "No es pot inicialitzar SDL_mixer";
-	if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024) == 1)///change to -1
+	if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024) == 0)///change to -1
 		throw "Unable to initialize SDL_mixer audio systems";
 
 	// --- SPRITES ---
@@ -63,6 +60,18 @@ int main(int, char*[])
 	SDL_Rect playerRect{ 0, 0, 117, 63 };
 
 	//-->Animated Sprite ---
+	SDL_Texture* spriteTexture{ IMG_LoadTexture(m_renderer, "../../res/img/sp01.png") };
+	SDL_Rect spriteRect, spritePosition;
+	int textWidth, textHeight, frameWidth, frameHeight;
+	SDL_QueryTexture(spriteTexture, NULL, NULL, &textWidth, &textHeight);
+	frameWidth = textWidth / 6;
+	frameHeight = textHeight / 1;
+	spritePosition.x = spritePosition.y = 0;
+	spriteRect.x = spriteRect.y = 0;
+	spritePosition.h = spriteRect.h = frameHeight;
+	spritePosition.w = spriteRect.w = frameWidth;
+	int frameCount = 0;
+
 
 	// --- TEXT ---
 	//Title
@@ -135,6 +144,9 @@ int main(int, char*[])
 	IVec2 mousePos{ 0, 0 };
 	bool playActivated = false;
 	bool inputDown[static_cast<int>(InputKey::COUNT)] = {};
+	clock_t lastTime = clock();
+	float timeDown = 60.f;
+	float deltaTime = 0.f;
 
 	// --- GAME LOOP ---
 	SDL_Event event;
@@ -167,9 +179,9 @@ int main(int, char*[])
 		if (inputDown[static_cast<int>(InputKey::K_ESC)])
 			isRunning = false;
 		if (inputDown[static_cast<int>(InputKey::M_MOVED)]) {
-			play.hover = checkIfMouseIn(play.rect, mousePos);
-			sound.hover = checkIfMouseIn(sound.rect, mousePos);
-			exit.hover = checkIfMouseIn(exit.rect, mousePos);
+			play.hover = checkPointInRect(play.rect, mousePos);
+			sound.hover = checkPointInRect(sound.rect, mousePos);
+			exit.hover = checkPointInRect(exit.rect, mousePos);
 		}
 		if (inputDown[static_cast<int>(InputKey::M_LEFT)]) {
 			play.clicked = play.hover;
@@ -181,14 +193,24 @@ int main(int, char*[])
 			sound.clicked = false;
 			exit.clicked = false;
 		}
+		if (frameCount >= 9) {
+			frameCount = 0;
+			spriteRect.x += frameWidth;
+			if (spriteRect.x >= textWidth)
+				spriteRect.x = 0;
+		}
+		frameCount++;
+
 		playerRect.x += (mousePos.x - playerRect.x  - playerRect.w / 2) / 10;
 		playerRect.y += (mousePos.y - playerRect.y - playerRect.h / 2) / 10;
 		//play button
 		if (play.clicked) {
 			playActivated = !playActivated;
 		}
-		if (playActivated)
+		if (playActivated) {
 			play.texture = playClickTexture;
+			timeDown -= deltaTime;
+		}
 		else {
 			if (play.hover)
 				play.texture = playHoverTexture;
@@ -214,10 +236,15 @@ int main(int, char*[])
 		if (exit.clicked) {
 			isRunning = false;
 		}
-		//put the input clicks to false
+		//put the input down to false
 		for (int i = 0; i < static_cast<int>(InputKey::COUNT); i++) {
 			inputDown[i] = false;
 		}
+
+		deltaTime = clock() - lastTime;
+		lastTime = clock();
+		deltaTime /= CLOCKS_PER_SEC;
+
 
 		// DRAW
 		SDL_RenderClear(m_renderer);
@@ -229,6 +256,8 @@ int main(int, char*[])
 		SDL_RenderCopy(m_renderer, play.texture, nullptr, &play.rect);
 		SDL_RenderCopy(m_renderer, sound.texture, nullptr, &sound.rect);
 		SDL_RenderCopy(m_renderer, exit.texture, nullptr, &exit.rect);
+		SDL_RenderCopy(m_renderer, spriteTexture, &spriteRect, &spritePosition);
+
 		SDL_RenderPresent(m_renderer);
 	}
 
