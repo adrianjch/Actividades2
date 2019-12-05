@@ -37,12 +37,7 @@ private:
 
 
 template <class T> BinaryTree<T>::BinaryTree() {
-	root = new Node(6);
-	root->left = new Node(30);
-	root->left->left = new Node(15);
-	root->left->right = new Node(2);
-	root->left->right->left = new Node(0);
-	root->right = new Node(60);
+	root = nullptr;
 }
 template <class T> BinaryTree<T>::~BinaryTree() {
 	Empty();

@@ -18,7 +18,13 @@ int main() {
 	tree.Empty();
 	std::cout << "\nGetNumberNodes after Empty(): " << tree.GetNumberNodes();
 
-	//BinarySearchTree<int> bst;
+	BinarySearchTree bst;
+	bst.InsertKey(8);
+	bst.InsertKey(3);
+	bst.InsertKey(10);
+	bst.InsertKey(7);
+	bst.InsertKey(1);
+	bst.InsertKey(9);
 
 	return 0;
 }
