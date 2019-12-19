@@ -16,9 +16,9 @@ int main() {
 	std::cout << std::endl;
 	//Ex 2
 	std::vector<Object> objects = { {'c', 6, 9} , {'z', 48, 10} };
-	Save(objects, "objects.txt");
+	Save<Object>(objects, "objects.txt");
 	std::vector<Object> objects2;
-	Recover(objects2, "objects.txt");
+	Recover<Object>(objects2, "objects.txt");
 	for (int i = 0; i < objects2.size(); i++)
 		std::cout << objects2[i].type << " " << objects2[i].x << " " << objects2[i].y << std::endl;
 
