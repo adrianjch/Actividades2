@@ -2,6 +2,7 @@
 #include <stack>
 #include <iostream>
 #include <algorithm>
+#include <queue>
 
 template <class T>
 class BinaryTree {
@@ -26,6 +27,8 @@ public:
 	int GetNumberNodesI();
 	int Height();
 	void Empty();
+
+	void PrintPath(std::queue<int>);
 private:
 	void Empty(Node*);
 	void PreOrder(Node*);
@@ -33,29 +36,23 @@ private:
 	void PostOrder(Node*);
 	int GetNumberNodes(Node*);
 	int Height(Node*);
+	void PrintPath(Node*, std::queue<int>&);
 };
 
 
 template <class T> BinaryTree<T>::BinaryTree() {
 	root = nullptr;
+
+
+
+	root = new Node(5);
+	root->left = new Node(3);
+	root->right = new Node(1);
+	root->left->left = new Node(2);
+	root->right->right = new Node(7);
 }
 template <class T> BinaryTree<T>::~BinaryTree() {
 	Empty();
-}
-template <class T> void BinaryTree<T>::Empty() {
-	Empty(root);
-	root = nullptr;
-}
-template <class T> void BinaryTree<T>::Empty(Node* n) {
-	if (n == nullptr)
-		return;
-
-	Empty(n->left);
-	n->left = nullptr;
-	Empty(n->right);
-	n->right = nullptr;
-	
-	delete n;
 }
 
 template <class T> void BinaryTree<T>::PreOrder() {
@@ -147,4 +144,41 @@ template <class T> int BinaryTree<T>::Height(Node* n) {
 		return 0;
 
 	return 1 + std::max(Height(n->left), Height(n->right));
+}
+
+template <class T> void BinaryTree<T>::Empty() {
+	Empty(root);
+	root = nullptr;
+}
+template <class T> void BinaryTree<T>::Empty(Node* n) {
+	if (n == nullptr)
+		return;
+
+	Empty(n->left);
+	n->left = nullptr;
+	Empty(n->right);
+	n->right = nullptr;
+
+	delete n;
+}
+
+template <class T> void BinaryTree<T>::PrintPath(std::queue<int> v) {
+	PrintPath(root, v);
+}
+
+template <class T> void BinaryTree<T>::PrintPath(Node* n, std::queue<int> &v) {
+	if (n == nullptr)
+		return;
+
+	std::cout << n->data << std::endl;
+	if (!v.empty()) {
+		if (v.front() == -1) {
+			v.pop();
+			PrintPath(n->left, v);
+		}
+		else if (v.front() == -2) {
+			v.pop();
+			PrintPath(n->right, v);
+		}
+	}
 }
